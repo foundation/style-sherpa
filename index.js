@@ -23,7 +23,8 @@ module.exports = function(input, options, cb) {
 
     // Find the title of the page by identifying the <h1>
     // The second match is the inner group
-    var title = body.match('<h1.*>(.*)</h1>')[1] || 'Page ' + (i + 1);
+    var foundHeadings = body.match('<h1.*>(.*)</h1>');
+    var title = foundHeadings && foundHeadings[1] || 'Page ' + (i + 1);
     var anchor = title.toLowerCase().replace(/[^\w]+/g, '-');
 
     return { title: title, anchor: anchor, body: body }
