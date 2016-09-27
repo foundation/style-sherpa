@@ -27,7 +27,31 @@ module.exports = function(input, options, cb) {
     var title = foundHeadings && foundHeadings[1] || 'Page ' + (i + 1);
     var anchor = title.toLowerCase().replace(/[^\w]+/g, '-');
 
-    return { title: title, anchor: anchor, body: body }
+    var subheadings = null;
+    if(options.includeSubheadings) {
+      var subheadRe = /(<h2.*?>(.*?)<\/h2>)/g;
+
+      var foundSubheadings = [];
+      var match;
+      var i = 0;
+      while((match = subheadRe.exec(body)) !== null) {
+        i = i + 1;
+        var subTitle = match[2];
+        var subAnchor = anchor + '-sub-' + i;
+        foundSubheadings.push({title: subTitle, anchor: subAnchor, content: match[1]});
+      }
+      if(foundSubheadings.length) {
+        subheadings = foundSubheadings.map(function(subheading) {
+          body = body.replace(subheading.content, '<section id="' + subheading.anchor +'"></section>' + subheading.content);
+          return {title: subheading.title, anchor: subheading.anchor};
+        });
+      }
+    }
+
+    var results = { title: title, anchor: anchor, body: body};
+    if(subheadings) {results.subheadings = subheadings};
+
+    return results;
   });
 
   // Write file to disk
