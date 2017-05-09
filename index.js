@@ -58,6 +58,11 @@ module.exports = function(input, options, cb) {
   var templateFile = path.isAbsolute(options.template) ? fs.readFileSync(path.join(options.template)) : fs.readFileSync(path.join(process.cwd(), options.template));
   var template = handlebars.compile(templateFile.toString(), { noEscape: true });
   var outputPath = path.isAbsolute(options.template) ? path.join(options.output) : path.join(process.cwd(), options.output);
+  var outputDir = path.dirname(outputPath);
+
+  if(!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir);
+  }
 
   fs.writeFile(outputPath, template({ pages: pages }), cb);
 }
