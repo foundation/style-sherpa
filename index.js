@@ -12,7 +12,7 @@ module.exports = function(input, options, cb) {
   }, options);
 
   // Read input file
-  var inputFile = fs.readFileSync(path.join(process.cwd(), input));
+  var inputFile = path.isAbsolute(input) ? fs.readFileSync(path.join(input)) : fs.readFileSync(path.join(process.cwd(), input));
   // The divider for pages is four newlines
   var pages = inputFile.toString().replace(/(?:\r\n)/mg, "\n").split('\n\n\n\n');
 
@@ -55,9 +55,9 @@ module.exports = function(input, options, cb) {
   });
 
   // Write file to disk
-  var templateFile = fs.readFileSync(path.join(process.cwd(), options.template));
+  var templateFile = path.isAbsolute(options.template) ? fs.readFileSync(path.join(options.template)) : fs.readFileSync(path.join(process.cwd(), options.template));
   var template = handlebars.compile(templateFile.toString(), { noEscape: true });
-  var outputPath = path.join(process.cwd(), options.output);
+  var outputPath = path.isAbsolute(options.template) ? path.join(options.output) : path.join(process.cwd(), options.output);
 
   fs.writeFile(outputPath, template({ pages: pages }), cb);
 }
