@@ -1,4 +1,5 @@
 .DS_Store
 node_modules
 npm-debug.log
-test/fixtures/test.html
+test/fixtures/test-xy.html
+test/fixtures/test-flex.html
